@@ -68,12 +68,27 @@
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .note-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.note-content {
+  flex: 1;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
 }
 
 .note-card h3 {
@@ -150,6 +165,21 @@
 
 .btn-secondary:hover {
   background-color: #e9ecef;
+}
+
+.btn-edit {
+  background: transparent;
+  border: 1px solid #dee2e6;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background-color: #f8f9fa;
+  border-color: #646cff;
 }
 
 /* Note Form Styles */

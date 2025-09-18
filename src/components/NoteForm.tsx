@@ -1,14 +1,30 @@
-import { useState } from 'react';
-import type { NoteFormData } from '../types';
+import { useState, useEffect } from 'react';
+import type { NoteFormData, Note } from '../types';
 
 interface NoteFormProps {
   onSubmit: (noteData: NoteFormData) => void;
   onCancel: () => void;
+  editingNote?: Note;
 }
 
-export const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
+export const NoteForm = ({
+  onSubmit,
+  onCancel,
+  editingNote,
+}: NoteFormProps) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+
+  // Set initial values when editing
+  useEffect(() => {
+    if (editingNote) {
+      setTitle(editingNote.title);
+      setContent(editingNote.content);
+    } else {
+      setTitle('');
+      setContent('');
+    }
+  }, [editingNote]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +45,7 @@ export const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
     <div className="note-form-overlay">
       <div className="note-form-container">
         <form onSubmit={handleSubmit} className="note-form">
-          <h2>Create New Note</h2>
+          <h2>{editingNote ? 'Edit Note' : 'Create New Note'}</h2>
 
           <div className="form-group">
             <label htmlFor="title">Title (optional)</label>
@@ -69,7 +85,7 @@ export const NoteForm = ({ onSubmit, onCancel }: NoteFormProps) => {
               className="btn btn-primary"
               disabled={!content.trim()}
             >
-              Create Note
+              {editingNote ? 'Update Note' : 'Create Note'}
             </button>
           </div>
         </form>

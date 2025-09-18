@@ -1,20 +1,32 @@
 import { useState } from 'react';
 import { useNotes } from './hooks/useNotes';
 import { NoteForm } from './components/NoteForm';
-import type { NoteFormData } from './types';
+import type { NoteFormData, Note } from './types';
 import './App.css';
 
 function App() {
-  const { notes, isLoading, error, addNote } = useNotes();
+  const { notes, isLoading, error, addNote, updateNote } = useNotes();
   const [showForm, setShowForm] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
 
   const handleCreateNote = (noteData: NoteFormData) => {
-    addNote(noteData);
+    if (editingNote) {
+      updateNote(editingNote.id, noteData);
+      setEditingNote(null);
+    } else {
+      addNote(noteData);
+    }
     setShowForm(false);
+  };
+
+  const handleEditNote = (note: Note) => {
+    setEditingNote(note);
+    setShowForm(true);
   };
 
   const handleCancelForm = () => {
     setShowForm(false);
+    setEditingNote(null);
   };
 
   if (isLoading) {
@@ -61,9 +73,20 @@ function App() {
           <div className="notes-grid">
             {notes.map((note) => (
               <div key={note.id} className="note-card">
-                <h3>{note.title}</h3>
-                <p>{note.content.substring(0, 100)}...</p>
-                <small>Updated: {note.updatedAt.toLocaleDateString()}</small>
+                <div className="note-content">
+                  <h3>{note.title}</h3>
+                  <p>{note.content.substring(0, 100)}...</p>
+                  <small>Updated: {note.updatedAt.toLocaleDateString()}</small>
+                </div>
+                <div className="note-actions">
+                  <button
+                    onClick={() => handleEditNote(note)}
+                    className="btn btn-edit"
+                    title="Edit note"
+                  >
+                    ✏️
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -71,7 +94,11 @@ function App() {
       </main>
 
       {showForm && (
-        <NoteForm onSubmit={handleCreateNote} onCancel={handleCancelForm} />
+        <NoteForm
+          onSubmit={handleCreateNote}
+          onCancel={handleCancelForm}
+          editingNote={editingNote || undefined}
+        />
       )}
     </div>
   );
