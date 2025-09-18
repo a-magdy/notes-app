@@ -1,8 +1,21 @@
+import { useState } from 'react';
 import { useNotes } from './hooks/useNotes';
+import { NoteForm } from './components/NoteForm';
+import type { NoteFormData } from './types';
 import './App.css';
 
 function App() {
-  const { notes, isLoading, error } = useNotes();
+  const { notes, isLoading, error, addNote } = useNotes();
+  const [showForm, setShowForm] = useState(false);
+
+  const handleCreateNote = (noteData: NoteFormData) => {
+    addNote(noteData);
+    setShowForm(false);
+  };
+
+  const handleCancelForm = () => {
+    setShowForm(false);
+  };
 
   if (isLoading) {
     return (
@@ -25,12 +38,24 @@ function App() {
       <header className="app-header">
         <h1>My Notes</h1>
         <p>You have {notes.length} notes</p>
+        <button
+          onClick={() => setShowForm(true)}
+          className="btn btn-primary create-note-btn"
+        >
+          + Create Note
+        </button>
       </header>
 
       <main className="app-main">
         {notes.length === 0 ? (
           <div className="empty-state">
             <p>No notes yet. Create your first note!</p>
+            <button
+              onClick={() => setShowForm(true)}
+              className="btn btn-primary"
+            >
+              + Create Your First Note
+            </button>
           </div>
         ) : (
           <div className="notes-grid">
@@ -44,6 +69,10 @@ function App() {
           </div>
         )}
       </main>
+
+      {showForm && (
+        <NoteForm onSubmit={handleCreateNote} onCancel={handleCancelForm} />
+      )}
     </div>
   );
 }
