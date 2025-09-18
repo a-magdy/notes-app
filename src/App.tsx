@@ -5,7 +5,8 @@ import type { NoteFormData, Note } from './types';
 import './App.css';
 
 function App() {
-  const { notes, isLoading, error, addNote, updateNote } = useNotes();
+  const { notes, isLoading, error, addNote, updateNote, deleteNote } =
+    useNotes();
   const [showForm, setShowForm] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
 
@@ -22,6 +23,12 @@ function App() {
   const handleEditNote = (note: Note) => {
     setEditingNote(note);
     setShowForm(true);
+  };
+
+  const handleDeleteNote = (note: Note) => {
+    if (window.confirm(`Are you sure you want to delete "${note.title}"?`)) {
+      deleteNote(note.id);
+    }
   };
 
   const handleCancelForm = () => {
@@ -85,6 +92,13 @@ function App() {
                     title="Edit note"
                   >
                     ✏️
+                  </button>
+                  <button
+                    onClick={() => handleDeleteNote(note)}
+                    className="btn btn-delete"
+                    title="Delete note"
+                  >
+                    🗑️
                   </button>
                 </div>
               </div>
